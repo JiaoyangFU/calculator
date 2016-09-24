@@ -1,12 +1,12 @@
 package com.calculator.calculator;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private Button
             // digits and dot
             button_one,button_two,button_three,button_four,
@@ -146,7 +146,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 break;
 
             case R.id.equal:
-                display_str =  Double.toString(calculate());
+                try {
+                    display_str =  Double.toString(calculate());
+                }
+                catch(Exception e) {
+                    //display_str = "Not a number";
+                    display_str = e.toString();
+                }
+
                 display_area.setText(display_str);
                 display_str = "";
                 expression = "";
@@ -185,7 +192,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
             case R.id.sqrt:
                 display_str = "";
-                expression += "√";
+                expression += "√";// sqrt
+                try {
+                    display_str =  Double.toString(calculate());
+                }
+                catch(Exception e) {
+                    //display_str = "Not a number";
+                    display_str = e.toString();
+                }
+                display_area.setText(display_str);
+                expression = display_str;
                 is_operator = true;
                 break;
 
@@ -202,6 +218,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 memory_val -= Double.parseDouble(display_str);
                 break;
 
+            case R.id.mrc: // mrc recally value
+                display_str =  Double.toString(memory_val);
+                break;
+
             default:
                 break;
         }
@@ -209,12 +229,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     double calculate() {
-        double result, prev_num; // number before previous operator
+        double result, prev_num, number; // number before previous operator
         char oprt = '+';
         String cur_num = ""; // number after previous operator
         result = prev_num = 0;
 
-        expression += "+";// as end sign of the expression
+        //display_area.setText(expression);
+
+        expression += "#";// as end sign of the expression
+
         for (int i = 0; i < expression.length(); i++) {
             char c = expression.charAt(i);
 
@@ -222,7 +245,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 cur_num += c;
             }
             else {
-                double number = Double.parseDouble(cur_num);
+                number =  cur_num == "" ? 0: Double.parseDouble(cur_num);
                 cur_num = "";
                 // check previous operator
                 if (oprt == '+' || oprt == '-') {
@@ -230,13 +253,23 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     prev_num = (oprt == '-' ? -1 : 1) * number;
                 }
                 else if (oprt == '/') {
-                    prev_num /= number;
+                    try{
+                        prev_num /= number;
+                    }
+                    catch(Exception e){
+                       throw e;
+                    }
                 }
                 else if (oprt == '*') {
                     prev_num *= number;
                 }
                 else if (oprt == '%') {
-                    prev_num %= number;
+                    try{
+                        prev_num %= number;
+                    }
+                    catch(Exception e){
+                        throw e;
+                    }
                 }
                 // x√  == sqrt(x)
                 else if (oprt == '√') {
@@ -250,6 +283,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 oprt = c;
             }
         }
+
         return result + prev_num;
     }
 }
