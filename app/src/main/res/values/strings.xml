@@ -18,8 +18,8 @@
     <string name="multiplication"> * </string>
     <string name="division"> / </string>
     <string name="modulus"> % </string>
+    <string name="sqrt">√</string>
     <string name="equal"> = </string>
-    <string name="empty"> e </string>
 
     <string name="dot">.</string>
     <string name="zero">0</string>
@@ -34,4 +34,5 @@
     <string name="nine">9</string>
 
 
+    <string name="row_three"> row_three</string>
 </resources>
