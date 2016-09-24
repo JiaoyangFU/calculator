@@ -3,9 +3,8 @@
     <string name="action_settings">Settings</string>
 
     <string name="display_text">display_text</string>
-    <string name="display_hint">display_hint</string>
+    <string name="display_hint">input</string>
 
-    <string name="m_ex"> M/EX </string>
     <string name="m_plus"> M+ </string>
     <string name="m_minus"> M- </string>
     <string name="mrc"> MRC </string>
@@ -14,7 +13,7 @@
     <string name="all_clear_memory"> AC </string>
 
     <string name="addition"> + </string>
-    <string name="substraction"> - </string>
+    <string name="subtraction"> - </string>
     <string name="multiplication"> * </string>
     <string name="division"> / </string>
     <string name="modulus"> % </string>
