@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button
             // digits and dot
             button_one,button_two,button_three,button_four,
@@ -24,7 +24,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private double memory_val;
     // display_str will be cleared/updated if input is not digits, dot, m+, m-, mc;
     // expression will be cleared if input is '='
-    private String display_str, expression;
+    private String display_str, expression,
+            last_result; // last digits how on screen
+
+    long lastDown, lastDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         memory_val = 0;
         display_str = "";
         expression = "";
+        last_result = "";
 
         // digits from 0 ~ 9
         button_one = (Button)findViewById(R.id.one);
@@ -94,6 +98,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_m_plus.setOnClickListener(this);
         btn_m_minus.setOnClickListener(this);
         btn_clear.setOnClickListener(this);
+
+        // mrc clear memory value
+        btn_mrc.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
+                //activity.openContextMenu(view);
+                memory_val = 0;
+                display_str = "0";
+                display_area.setText(display_str);
+                return true;  // avoid extra click events
+            }
+        });
     }
 
     @Override
@@ -137,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 expression += "9";
                 break;
             case R.id.zero:
+                if(display_str.length() > 0 && display_str.charAt(0) == '0') break;
                 display_str += "0";
                 expression += "0";
                 break;
@@ -150,81 +166,151 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     display_str =  Double.toString(calculate());
                 }
                 catch(Exception e) {
-                    //display_str = "Not a number";
-                    display_str = e.toString();
+                    display_str = e.toString();//display_str = "Not a number";
                 }
-
                 display_area.setText(display_str);
-                display_str = "";
+                last_result = display_str;
                 expression = "";
+                display_str = "";
                 is_operator = true;
                 break;
 
             case R.id.addition:
-                display_str = "";
-                expression += "+";
-                is_operator = true;
-                break;
-
-            case R.id.subtraction:
-                display_str = "";
-                expression += "-";
-                is_operator = true;
-                break;
-
-            case R.id.multiplication:
-                display_str = "";
-                expression += "*";
-                is_operator = true;
-                break;
-
-            case R.id.division:
-                display_str = "";
-                expression += "/";
-                is_operator = true;
-                break;
-
-            case R.id.modulus:
-                display_str = "";
-                expression += "%";
-                is_operator = true;
-                break;
-
-            case R.id.sqrt:
-                display_str = "";
-                expression += "√";// sqrt
+                if (expression == "") expression = last_result;
                 try {
                     display_str =  Double.toString(calculate());
                 }
                 catch(Exception e) {
-                    //display_str = "Not a number";
-                    display_str = e.toString();
+                    display_str = e.toString(); //display_str = "Not a number";
                 }
                 display_area.setText(display_str);
-                expression = display_str;
+                last_result = display_str;
+                display_str = "";
+                expression = last_result + "+";
+                last_result = "";
+                is_operator = true;
+                break;
+
+            case R.id.subtraction:
+                if (expression == "") expression = last_result;
+                try {
+                    display_str =  Double.toString(calculate());
+                }
+                catch(Exception e) {
+                    display_str = e.toString(); //display_str = "Not a number";
+                }
+                display_area.setText(display_str);
+                last_result = display_str;
+                display_str = "";
+                expression = last_result + "-";
+                last_result = "";
+                is_operator = true;
+                break;
+
+            case R.id.multiplication:
+                if (expression == "") expression = last_result;
+                try {
+                    display_str =  Double.toString(calculate());
+                }
+                catch(Exception e) {
+                    display_str = e.toString(); //display_str = "Not a number";
+                }
+                display_area.setText(display_str);
+                last_result = display_str;
+                display_str = "";
+                expression = last_result + "*";
+                last_result = "";
+                is_operator = true;
+                break;
+
+            case R.id.division:
+                if (expression == "") expression = last_result;
+                try {
+                    display_str =  Double.toString(calculate());
+                }
+                catch(Exception e) {
+                    display_str = e.toString(); //display_str = "Not a number";
+                }
+                display_area.setText(display_str);
+                last_result = display_str;
+                display_str = "";
+                expression = last_result + "/";
+                last_result = "";
+                is_operator = true;
+                break;
+
+            case R.id.modulus:
+                if (expression == "") expression = last_result;
+                try {
+                    display_str =  Double.toString(calculate());
+                }
+                catch(Exception e) {
+                    display_str = e.toString(); //display_str = "Not a number";
+                }
+                display_area.setText(display_str);
+                last_result = display_str;
+                display_str = "";
+                expression = last_result + "%";
+                last_result = "";
+                is_operator = true;
+                break;
+
+            case R.id.sqrt:
+                if (expression == "") expression = last_result;
+                try {
+                    display_str =  Double.toString(calculate());
+                }
+                catch(Exception e) {
+                    display_str = e.toString(); //display_str = "Not a number";
+                }
+                display_area.setText(display_str);
+                last_result = display_str;
+
+                expression = last_result + "√";// sqrt
+                try {
+                    display_str =  Double.toString(calculate());
+                }
+                catch(Exception e) {
+                    display_str = e.toString();//display_str = "Not a number";
+                }
+                display_area.setText(display_str);
+                last_result = display_str;
+                expression = "";
+                display_str = "";
                 is_operator = true;
                 break;
 
             case R.id.clear_whole_expression: // C
-                display_str = "";
+                display_str = "0";
                 expression = "";
+                last_result = "0";
                 break;
 
             case R.id.m_plus: // M+
-                memory_val += Double.parseDouble(display_str);
+                String str1 = display_str == "" ? last_result : display_str;
+                memory_val += Double.parseDouble(str1);
+                is_operator = true;
                 break;
 
             case R.id.m_minus: // M-
-                memory_val -= Double.parseDouble(display_str);
+                String str2 = display_str == "" ? last_result : display_str;
+                memory_val -= Double.parseDouble(str2);
+                is_operator = true;
                 break;
 
-            case R.id.mrc: // mrc recally value
+            case R.id.mrc: // mrc recall value
                 display_str =  Double.toString(memory_val);
+                display_area.setText(display_str);
+                last_result = display_str;
+                display_str = "";
+                is_operator = true;
                 break;
 
             default:
                 break;
         }
+        if (display_str.length() > 1 && display_str.charAt(0) == '0')
+            display_str = display_str.replaceFirst ("^0*", ""); // remove leading zero
         if (!is_operator) display_area.setText(display_str);
     }
 
@@ -234,10 +320,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String cur_num = ""; // number after previous operator
         result = prev_num = 0;
 
-        //display_area.setText(expression);
+        if (expression.charAt(0) == '-') {
+            expression = "0" + expression;
+        }
 
         expression += "#";// as end sign of the expression
-
         for (int i = 0; i < expression.length(); i++) {
             char c = expression.charAt(i);
 
@@ -283,7 +370,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 oprt = c;
             }
         }
-
         return result + prev_num;
     }
 }
